@@ -265,6 +265,49 @@ h5 {
   border-radius: 0;
 }
 
+.subscene-list {
+  display: grid;
+  gap: 10px;
+  padding: 0 16px 16px 34px;
+}
+
+.subscene-block {
+  border-left: 3px solid #b7c6c1;
+  border-radius: 6px;
+  background: #fbfaf7;
+}
+
+.subscene-heading {
+  display: grid;
+  gap: 4px;
+  padding: 12px 12px 2px;
+}
+
+.subscene-heading span {
+  color: #697572;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.subscene-heading a,
+.subscene-heading strong {
+  color: #273233;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.subscene-heading a:hover {
+  color: #245c59;
+}
+
+.subscene-heading p {
+  margin-bottom: 0;
+  color: #62706d;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .scene-row,
 .roster-row {
   display: grid;

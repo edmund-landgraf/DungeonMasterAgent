@@ -80,6 +80,24 @@ on conflict (act_id, scene_number, title) do update set
   kind = excluded.kind,
   html_path = excluded.html_path;
 
+with target_scenes as (
+  select s.id, a.act_number, s.scene_number
+  from scenes s
+  join acts a on a.id = s.act_id
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into subscenes (scene_id, subscene_number, title, kind, html_path, summary)
+select id, 1, 'Approach Through the Weather', 'subscene', null, 'A short setup beat before the ambush becomes visible.' from target_scenes where act_number = 2 and scene_number = 2
+union all
+select id, 2, 'The First Strike', 'subscene', null, 'The ambush resolves into action or a tense social standoff.' from target_scenes where act_number = 2 and scene_number = 2
+union all
+select id, 1, 'Counting the Blades', 'subscene', null, 'The party reads the merchant swap before deciding whether to interfere.' from target_scenes where act_number = 2 and scene_number = 4
+on conflict (scene_id, subscene_number, title) do update set
+  kind = excluded.kind,
+  html_path = excluded.html_path,
+  summary = excluded.summary;
+
 with target_acts as (
   select a.id, a.act_number
   from acts a
@@ -115,6 +133,25 @@ on conflict (scene_id, title) do update set
   body_format = excluded.body_format,
   sort_order = excluded.sort_order;
 
+with target_subscenes as (
+  select ss.id, a.act_number, s.scene_number, ss.subscene_number
+  from subscenes ss
+  join scenes s on s.id = ss.scene_id
+  join acts a on a.id = s.act_id
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into subscene_narratives (subscene_id, title, body, body_format, sort_order)
+select id, 'Weather Read', '<p>Sleet turns the street lamps into dull halos. Wagon tracks vanish quickly here, but one set of prints keeps its shape a little too cleanly.</p>', 'html', 10 from target_subscenes where act_number = 2 and scene_number = 2 and subscene_number = 1
+union all
+select id, 'Action Beat', '<p>The first attacker moves when the cart wheel snaps. It is staged, loud, and meant to make bystanders look away.</p>', 'html', 10 from target_subscenes where act_number = 2 and scene_number = 2 and subscene_number = 2
+union all
+select id, 'Tradecraft', '<p>Every sword in the crate is wrapped twice except one. That one has the careful indifference of a planted object.</p>', 'html', 10 from target_subscenes where act_number = 2 and scene_number = 4 and subscene_number = 1
+on conflict (subscene_id, title) do update set
+  body = excluded.body,
+  body_format = excluded.body_format,
+  sort_order = excluded.sort_order;
+
 with frost as (select id from modules where slug = 'frost-in-the-vault'),
 target_scenes as (
   select s.id, a.act_number, s.scene_number
@@ -130,5 +167,6 @@ select frost.id, null::bigint, target_scenes.id, 'Science: Hollow Chill', '/modu
 on conflict (module_id, title) do update set
   act_id = excluded.act_id,
   scene_id = excluded.scene_id,
+  subscene_id = excluded.subscene_id,
   file_path = excluded.file_path,
   description = excluded.description;

@@ -139,17 +139,58 @@ async function loadModulesFromDatabase() {
             `
               select title, file_path as "filePath", description
               from handouts
-              where scene_id = $1
+              where scene_id = $1 and subscene_id is null
               order by title
             `,
             [scene.id]
           );
 
+          const subscenes = await client.query(
+            `
+              select id, subscene_number as number, title, kind, html_path as path, summary
+              from subscenes
+              where scene_id = $1
+              order by subscene_number, title
+            `,
+            [scene.id]
+          );
+
+          const hydratedSubscenes = [];
+          for (const subscene of subscenes.rows) {
+            const subsceneNarratives = await client.query(
+              `
+                select title, body, body_format as "bodyFormat", sort_order as "sortOrder"
+                from subscene_narratives
+                where subscene_id = $1
+                order by sort_order, title
+              `,
+              [subscene.id]
+            );
+
+            const subsceneHandouts = await client.query(
+              `
+                select title, file_path as "filePath", description
+                from handouts
+                where subscene_id = $1
+                order by title
+              `,
+              [subscene.id]
+            );
+
+            const { id: _subsceneId, ...subscenePayload } = subscene;
+            hydratedSubscenes.push({
+              ...subscenePayload,
+              narratives: subsceneNarratives.rows,
+              handouts: subsceneHandouts.rows
+            });
+          }
+
           const { id: _id, ...scenePayload } = scene;
           hydratedScenes.push({
             ...scenePayload,
             narratives: sceneNarratives.rows,
-            handouts: sceneHandouts.rows
+            handouts: sceneHandouts.rows,
+            subscenes: hydratedSubscenes
           });
         }
 

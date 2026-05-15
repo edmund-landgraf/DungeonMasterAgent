@@ -40,7 +40,14 @@ function App() {
     modules: modules.length,
     acts: modules.reduce((sum, module) => sum + module.acts.length, 0),
     scenes: modules.reduce(
-      (sum, module) => sum + module.acts.reduce((actSum, act) => actSum + act.scenes.length, 0),
+      (sum, module) =>
+        sum +
+        module.acts.reduce(
+          (actSum, act) =>
+            actSum +
+            act.scenes.reduce((sceneSum, scene) => sceneSum + 1 + (scene.subscenes?.length ?? 0), 0),
+          0
+        ),
       0
     ),
     characters: modules.reduce((sum, module) => sum + module.pcs.length + module.npcs.length, 0)
@@ -126,6 +133,7 @@ function ModuleDetail({ module }) {
                           </a>
                           <NarrativeList narratives={scene.narratives ?? []} compact />
                           <HandoutList handouts={scene.handouts ?? []} compact />
+                          <SubsceneList subscenes={scene.subscenes ?? []} />
                         </article>
                       ))}
                     </div>
@@ -145,6 +153,32 @@ function ModuleDetail({ module }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function SubsceneList({ subscenes }) {
+  if (subscenes.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="subscene-list">
+      {subscenes.map((subscene) => (
+        <article className="subscene-block" key={`${subscene.number}-${subscene.title}`}>
+          <div className="subscene-heading">
+            <span>{subscene.kind}</span>
+            {subscene.path ? (
+              <a href={subscene.path}>{subscene.title}</a>
+            ) : (
+              <strong>{subscene.title}</strong>
+            )}
+            {subscene.summary ? <p>{subscene.summary}</p> : null}
+          </div>
+          <NarrativeList narratives={subscene.narratives ?? []} compact />
+          <HandoutList handouts={subscene.handouts ?? []} compact />
+        </article>
+      ))}
+    </div>
   );
 }
 

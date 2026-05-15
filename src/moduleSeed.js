@@ -144,7 +144,37 @@ export const modules = [
                 bodyFormat: "html"
               }
             ],
-            handouts: []
+            handouts: [],
+            subscenes: [
+              {
+                number: 1,
+                title: "Approach Through the Weather",
+                kind: "subscene",
+                summary: "A short setup beat before the ambush becomes visible.",
+                narratives: [
+                  {
+                    title: "Weather Read",
+                    body: "<p>Sleet turns the street lamps into dull halos. Wagon tracks vanish quickly here, but one set of prints keeps its shape a little too cleanly.</p>",
+                    bodyFormat: "html"
+                  }
+                ],
+                handouts: []
+              },
+              {
+                number: 2,
+                title: "The First Strike",
+                kind: "subscene",
+                summary: "The ambush resolves into action or a tense social standoff.",
+                narratives: [
+                  {
+                    title: "Action Beat",
+                    body: "<p>The first attacker moves when the cart wheel snaps. It is staged, loud, and meant to make bystanders look away.</p>",
+                    bodyFormat: "html"
+                  }
+                ],
+                handouts: []
+              }
+            ]
           },
           {
             number: 3,
@@ -160,7 +190,23 @@ export const modules = [
             path: "/modules/frost-in-the-vault/silverhall/Modules/a2-s4.1-silver-for-swords.html",
             kind: "scene",
             narratives: [],
-            handouts: []
+            handouts: [],
+            subscenes: [
+              {
+                number: 1,
+                title: "Counting the Blades",
+                kind: "subscene",
+                summary: "The party reads the merchant swap before deciding whether to interfere.",
+                narratives: [
+                  {
+                    title: "Tradecraft",
+                    body: "<p>Every sword in the crate is wrapped twice except one. That one has the careful indifference of a planted object.</p>",
+                    bodyFormat: "html"
+                  }
+                ],
+                handouts: []
+              }
+            ]
           },
           {
             number: 5,
