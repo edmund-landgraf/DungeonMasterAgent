@@ -22,6 +22,14 @@ npm run db:init
 
 If Postgres is unavailable, the API falls back to the same seed data used by the React client.
 
+To create local roles matching the `socialmedialite` pattern manually:
+
+```bash
+psql -U appuser -d lDungeonMasterAgent -f db/roles.sql
+```
+
+Runtime uses `DATABASE_URL`; database creation should use `ADMIN_DATABASE_URL`.
+
 ## Linux server
 
 Recommended production path:
