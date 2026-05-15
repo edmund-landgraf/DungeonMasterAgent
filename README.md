@@ -24,6 +24,12 @@ If Postgres is unavailable, the API falls back to the same seed data used by the
 
 ## Linux server
 
+Recommended production path:
+
+```bash
+~/repos/DungeonMasterAgent
+```
+
 ```bash
 npm ci
 npm run build
@@ -33,3 +39,12 @@ npm start
 ```
 
 Set `DATABASE_URL` in `.env` for the target server.
+
+With PM2:
+
+```bash
+npm run pm2:start
+pm2 save
+```
+
+The Node server serves the compiled React app from `dist/`, the API from `/api/*`, and imported static module files from the Vite public assets copied into `dist/` during build.

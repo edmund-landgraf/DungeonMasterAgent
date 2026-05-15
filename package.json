@@ -9,6 +9,8 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "db:init": "node server/init-db.js",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:restart": "pm2 restart DungeonMasterAgent --update-env",
     "start": "node server/index.js"
   },
   "dependencies": {
