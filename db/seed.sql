@@ -80,10 +80,55 @@ on conflict (act_id, scene_number, title) do update set
   kind = excluded.kind,
   html_path = excluded.html_path;
 
-with frost as (select id from modules where slug = 'frost-in-the-vault')
-insert into handouts (module_id, title, file_path, description)
-select id, 'Ilexi Reagent Analysis', '/modules/frost-in-the-vault/silverhall/Handouts + Props/ilexi-reagent-analysis.html', 'Handout' from frost
-union all select id, 'Science: Hollow Chill', '/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html', 'Handout' from frost
+with target_acts as (
+  select a.id, a.act_number
+  from acts a
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into act_narratives (act_id, title, body, body_format, sort_order)
+select id, 'Act Frame', '<p>Silverhall opens under hard weather, anxious coin, and contracts that feel colder than law. Use this narrative as the act-level spine before drilling into individual scenes.</p><p><strong>GM beat:</strong> keep pressure social first, then let the vault threat surface in clues and debts.</p>', 'html', 10 from target_acts where act_number = 1
+union all
+select id, 'Act Frame', '<p>Act II turns bargains into consequences. The party should feel watched, useful, and increasingly expensive to ignore.</p><p><em>Escalation:</em> reveal rival claims, missing goods, and favors that carry teeth (Diplomacy DC by table level).</p>', 'html', 10 from target_acts where act_number = 2
+on conflict (act_id, title) do update set
+  body = excluded.body,
+  body_format = excluded.body_format,
+  sort_order = excluded.sort_order;
+
+with target_scenes as (
+  select s.id, a.act_number, s.scene_number, s.title
+  from scenes s
+  join acts a on a.id = s.act_id
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into scene_narratives (scene_id, title, body, body_format, sort_order)
+select id, 'Read-Aloud Opening', '<p>The Crumbling Coin smells of wet wool, brass polish, and old smoke. Outside, sleet needles the shutters. Inside, every quiet conversation stops just long enough to measure who came through the door.</p>', 'html', 10 from target_scenes where act_number = 1 and scene_number = 1
+union all
+select id, 'GM Context', '<p>City Threads is a connective scene. Let the party choose which lead feels personal, then attach one concrete cost to delay (lost time, public suspicion, or a favor owed).</p>', 'html', 10 from target_scenes where act_number = 1 and scene_number = 2
+union all
+select id, 'Vault Tone', '<p>The vault is not silent. It ticks, exhales, and answers footsteps with tiny sounds from somewhere behind the stone. Treat environmental details as clues, not decoration.</p>', 'html', 10 from target_scenes where act_number = 1 and scene_number = 3
+union all
+select id, 'Ambush Setup', '<p>The ambush should begin as a bad feeling before initiative. Give the players one honest sign: a mismatched footprint, a cart parked too squarely, or a window shutting at the wrong moment.</p>', 'html', 10 from target_scenes where act_number = 2 and scene_number = 2
+on conflict (scene_id, title) do update set
+  body = excluded.body,
+  body_format = excluded.body_format,
+  sort_order = excluded.sort_order;
+
+with frost as (select id from modules where slug = 'frost-in-the-vault'),
+target_scenes as (
+  select s.id, a.act_number, s.scene_number
+  from scenes s
+  join acts a on a.id = s.act_id
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into handouts (module_id, act_id, scene_id, title, file_path, description)
+select frost.id, null::bigint, target_scenes.id, 'Ilexi Reagent Analysis', '/modules/frost-in-the-vault/silverhall/Handouts + Props/ilexi-reagent-analysis.html', 'Scene handout' from frost, target_scenes where act_number = 1 and scene_number = 2
+union all
+select frost.id, null::bigint, target_scenes.id, 'Science: Hollow Chill', '/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html', 'Scene handout' from frost, target_scenes where act_number = 1 and scene_number = 3
 on conflict (module_id, title) do update set
+  act_id = excluded.act_id,
+  scene_id = excluded.scene_id,
   file_path = excluded.file_path,
   description = excluded.description;

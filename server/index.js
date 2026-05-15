@@ -93,16 +93,73 @@ async function loadModulesFromDatabase() {
 
       const hydratedActs = [];
       for (const act of acts.rows) {
+        const actNarratives = await client.query(
+          `
+            select title, body, body_format as "bodyFormat", sort_order as "sortOrder"
+            from act_narratives
+            where act_id = $1
+            order by sort_order, title
+          `,
+          [act.id]
+        );
+
+        const actHandouts = await client.query(
+          `
+            select title, file_path as "filePath", description
+            from handouts
+            where act_id = $1 and scene_id is null
+            order by title
+          `,
+          [act.id]
+        );
+
         const scenes = await client.query(
           `
-            select scene_number as number, title, kind, html_path as path, summary
+            select id, scene_number as number, title, kind, html_path as path, summary
             from scenes
             where act_id = $1
             order by scene_number, title
           `,
           [act.id]
         );
-        hydratedActs.push({ ...act, scenes: scenes.rows });
+
+        const hydratedScenes = [];
+        for (const scene of scenes.rows) {
+          const sceneNarratives = await client.query(
+            `
+              select title, body, body_format as "bodyFormat", sort_order as "sortOrder"
+              from scene_narratives
+              where scene_id = $1
+              order by sort_order, title
+            `,
+            [scene.id]
+          );
+
+          const sceneHandouts = await client.query(
+            `
+              select title, file_path as "filePath", description
+              from handouts
+              where scene_id = $1
+              order by title
+            `,
+            [scene.id]
+          );
+
+          const { id: _id, ...scenePayload } = scene;
+          hydratedScenes.push({
+            ...scenePayload,
+            narratives: sceneNarratives.rows,
+            handouts: sceneHandouts.rows
+          });
+        }
+
+        const { id: _actId, ...actPayload } = act;
+        hydratedActs.push({
+          ...actPayload,
+          narratives: actNarratives.rows,
+          handouts: actHandouts.rows,
+          scenes: hydratedScenes
+        });
       }
 
       modules.push({

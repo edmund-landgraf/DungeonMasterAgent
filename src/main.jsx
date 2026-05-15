@@ -72,7 +72,7 @@ function App() {
             <img src={module.coverImage} alt="" />
             <span className="module-card__body">
               <span className="module-card__title">{module.title}</span>
-              <span className="module-card__meta">{module.status} · {module.levelRange}</span>
+              <span className="module-card__meta">{module.status} - {module.levelRange}</span>
             </span>
           </button>
         ))}
@@ -115,12 +115,18 @@ function ModuleDetail({ module }) {
                       <h4>{act.title}</h4>
                       <p>{act.summary}</p>
                     </div>
+                    <NarrativeList narratives={act.narratives ?? []} />
+                    <HandoutList handouts={act.handouts ?? []} />
                     <div className="scene-list">
                       {act.scenes.map((scene) => (
-                        <a className="scene-row" href={scene.path} key={scene.path}>
-                          <span>{scene.kind}</span>
-                          <strong>{scene.title}</strong>
-                        </a>
+                        <article className="scene-block" key={scene.path}>
+                          <a className="scene-row" href={scene.path}>
+                            <span>{scene.kind}</span>
+                            <strong>{scene.title}</strong>
+                          </a>
+                          <NarrativeList narratives={scene.narratives ?? []} compact />
+                          <HandoutList handouts={scene.handouts ?? []} compact />
+                        </article>
                       ))}
                     </div>
                   </article>
@@ -139,6 +145,51 @@ function ModuleDetail({ module }) {
         </div>
       </div>
     </section>
+  );
+}
+
+function NarrativeList({ narratives, compact = false }) {
+  if (narratives.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={`narrative-list ${compact ? "is-compact" : ""}`}>
+      {narratives.map((narrative) => (
+        <section className="narrative-block" key={narrative.title}>
+          <h5>{narrative.title}</h5>
+          <RichText body={narrative.body} format={narrative.bodyFormat} />
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function RichText({ body, format }) {
+  if (format === "html") {
+    return <div className="rich-text" dangerouslySetInnerHTML={{ __html: body }} />;
+  }
+
+  return <div className="rich-text is-plain">{body}</div>;
+}
+
+function HandoutList({ handouts, compact = false }) {
+  if (handouts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={`handout-list ${compact ? "is-compact" : ""}`}>
+      {handouts.map((handout) => (
+        <a className="handout-row" href={handout.filePath} key={handout.title}>
+          <FileText size={15} />
+          <span>
+            <strong>{handout.title}</strong>
+            <small>{handout.description}</small>
+          </span>
+        </a>
+      ))}
+    </div>
   );
 }
 

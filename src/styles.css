@@ -78,6 +78,12 @@ h4 {
   font-size: 1.05rem;
 }
 
+h5 {
+  margin: 0 0 6px;
+  color: #2f3a3b;
+  font-size: 0.92rem;
+}
+
 .status-strip {
   display: flex;
   flex-wrap: wrap;
@@ -219,7 +225,10 @@ h4 {
 
 .act-block,
 .roster-row,
-.scene-row {
+.scene-row,
+.scene-block,
+.narrative-block,
+.handout-row {
   border: 1px solid #d5d1c7;
   border-radius: 8px;
   background: #ffffff;
@@ -251,6 +260,11 @@ h4 {
   display: grid;
 }
 
+.scene-block {
+  border-width: 1px 0 0;
+  border-radius: 0;
+}
+
 .scene-row,
 .roster-row {
   display: grid;
@@ -262,7 +276,7 @@ h4 {
 .scene-row {
   grid-template-columns: 90px 1fr;
   align-items: center;
-  border-width: 1px 0 0;
+  border-width: 0;
   border-radius: 0;
 }
 
@@ -276,6 +290,66 @@ h4 {
 .scene-row:hover,
 .roster-row:hover {
   background: #f8fbfa;
+}
+
+.narrative-list,
+.handout-list {
+  display: grid;
+  gap: 10px;
+  padding: 12px 16px 16px;
+}
+
+.narrative-list.is-compact,
+.handout-list.is-compact {
+  padding-top: 0;
+}
+
+.narrative-block {
+  padding: 12px;
+  background: #fbfaf7;
+}
+
+.rich-text {
+  color: #455250;
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.rich-text p {
+  margin-bottom: 10px;
+}
+
+.rich-text p:last-child {
+  margin-bottom: 0;
+}
+
+.rich-text a {
+  color: #245c59;
+  font-weight: 750;
+}
+
+.rich-text.is-plain {
+  white-space: pre-wrap;
+}
+
+.handout-row {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 9px;
+  align-items: start;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.handout-row:hover {
+  background: #f5f9f8;
+}
+
+.handout-row small {
+  display: block;
+  margin-top: 2px;
+  color: #697572;
+  font-size: 0.78rem;
 }
 
 .roster-row {
