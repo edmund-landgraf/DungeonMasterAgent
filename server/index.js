@@ -71,15 +71,30 @@ async function loadModulesFromDatabase() {
         [module.id]
       );
 
-      const pcs = await client.query(
+      const pcRows = await client.query(
         `
-          select name, ancestry, class_name as className, sheet_path as "sheetPath"
+          select id, name, ancestry, class_name as "className", sheet_path as "sheetPath"
           from player_characters
           where module_id = $1
           order by name
         `,
         [module.id]
       );
+
+      const pcs = [];
+      for (const pc of pcRows.rows) {
+        const resources = await client.query(
+          `
+            select title, resource_type as "resourceType", file_path as "filePath"
+            from character_resources
+            where player_character_id = $1
+            order by resource_type, title
+          `,
+          [pc.id]
+        );
+        const { id: _pcId, ...pcPayload } = pc;
+        pcs.push({ ...pcPayload, resources: resources.rows });
+      }
 
       const npcs = await client.query(
         `
@@ -248,7 +263,7 @@ async function loadModulesFromDatabase() {
         summary: module.summary,
         sourceRoot: module.sourceRoot,
         acts: hydratedActs,
-        pcs: pcs.rows,
+        pcs,
         npcs: npcs.rows,
         bestiary
       });

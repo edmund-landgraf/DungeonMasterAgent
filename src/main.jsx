@@ -298,10 +298,19 @@ function Roster({ entries, emptyText }) {
   return (
     <div className="roster-list">
       {entries.map((entry) => (
-        <a className="roster-row" href={entry.sheetPath} key={entry.name}>
-          <strong>{entry.name}</strong>
-          <span>{entry.ancestry ?? entry.role}</span>
-        </a>
+        <div className="roster-row" key={entry.name}>
+          <a href={entry.sheetPath}>
+            <strong>{entry.name}</strong>
+            <span>{entry.ancestry ?? entry.role}</span>
+          </a>
+          {entry.resources?.length > 0 ? (
+            <div className="resource-list">
+              {entry.resources.map((resource) => (
+                <a href={resource.filePath} key={resource.title}>{resource.title}</a>
+              ))}
+            </div>
+          ) : null}
+        </div>
       ))}
     </div>
   );

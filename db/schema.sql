@@ -125,6 +125,15 @@ create table if not exists player_characters (
   unique (module_id, name)
 );
 
+create table if not exists character_resources (
+  id bigserial primary key,
+  player_character_id bigint not null references player_characters(id) on delete cascade,
+  title text not null,
+  resource_type text not null default 'sheet',
+  file_path text not null,
+  unique (player_character_id, title)
+);
+
 create table if not exists npcs (
   id bigserial primary key,
   module_id bigint not null references modules(id) on delete cascade,

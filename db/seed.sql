@@ -34,6 +34,8 @@ union all
 select id, 1, 'Dust in the Palm', 'The first Silverhall act, from the Crumbling Coin to Vault of Echoes.' from frost
 union all
 select id, 2, 'Ash and Chain', 'Ambushes, contracts, sword swaps, and the delivery.' from frost
+union all
+select id, 3, 'Companion Sidequests', 'Character-focused sidequests, rewards, backstories, relics, and personal props.' from frost
 on conflict (module_id, act_number) do update set
   title = excluded.title,
   summary = excluded.summary;
@@ -50,6 +52,25 @@ union all select id, 'Fosk', 'Cave badger', '/modules/frost-in-the-vault/silverh
 on conflict (module_id, name) do update set
   ancestry = excluded.ancestry,
   sheet_path = excluded.sheet_path;
+
+with pc_targets as (
+  select pc.id, pc.name
+  from player_characters pc
+  join modules m on m.id = pc.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into character_resources (player_character_id, title, resource_type, file_path)
+select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-karzak_mythic.htm' from pc_targets where name = 'Karzak Deepstem'
+union all select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-sava_mythic.htm' from pc_targets where name = 'Sava of Zmeyka'
+union all select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-velra_mythic.htm' from pc_targets where name = 'Velra Wynne'
+union all select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-serune_mythic.htm' from pc_targets where name = 'Serune Quen'
+union all select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-ilexi_mythic.htm' from pc_targets where name = 'Ilexi Tinctwhistle'
+union all select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-lazlo_mythic.htm' from pc_targets where name = 'Lazlo Oerlen'
+union all select id, 'Alternate Sheet', 'sheet', '/modules/frost-in-the-vault/silverhall/Characters/character-lazlo2.htm' from pc_targets where name = 'Lazlo Oerlen'
+union all select id, 'Mythic Sheet', 'mythic-sheet', '/modules/frost-in-the-vault/silverhall/Characters/mythic/character-fosk_mythic.htm' from pc_targets where name = 'Fosk'
+on conflict (player_character_id, title) do update set
+  resource_type = excluded.resource_type,
+  file_path = excluded.file_path;
 
 with frost as (select id from modules where slug = 'frost-in-the-vault')
 insert into npcs (module_id, name, role, sheet_path)
@@ -92,6 +113,8 @@ insert into scenes (act_id, scene_number, title, kind, html_path)
 select id, 1, 'Silverhall Prologue', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/module-prologue.html' from target_acts where act_number = 0
 union all select id, 2, 'Expanded Prologue', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/module-prologue-expanded.html' from target_acts where act_number = 0
 union all select id, 3, 'Full Prologue', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/module-prologue-tripled.html' from target_acts where act_number = 0
+union all select id, 4, 'Opening Scene', 'scene', '/modules/frost-in-the-vault/silverhall/Adventure Text/opening_css.htm' from target_acts where act_number = 0
+union all select id, 0, 'Act I Overview', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/module-act1-dust-in-the-palm.html' from target_acts where act_number = 1
 union all select id, 1, 'The Crumbling Coin', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/a1-s1-the-crumbling-coin.html' from target_acts where act_number = 1
 union all select id, 2, 'City Threads', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/a1-s2-city-threads.html' from target_acts where act_number = 1
 union all select id, 3, 'Vault of Echoes', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/a1-s3-vault-of-echoes.html' from target_acts where act_number = 1
@@ -100,6 +123,12 @@ union all select id, 2, 'Ambush', 'scene', '/modules/frost-in-the-vault/silverha
 union all select id, 3, 'Breach of Contract', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/a2-s3-breach-of-contract.html' from target_acts where act_number = 2
 union all select id, 4, 'Silver for Swords', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/a2-s4.1-silver-for-swords.html' from target_acts where act_number = 2
 union all select id, 5, 'The Delivery', 'scene', '/modules/frost-in-the-vault/silverhall/Modules/a2-s4.2-the-delivery.html' from target_acts where act_number = 2
+union all select id, 1, 'Sava: Snarehouse', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/Sava/encounter-snarehouse.htm' from target_acts where act_number = 3
+union all select id, 2, 'Karzak and Fosk: The Buried Heart', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/Karzan/sidequest-fosk-buried-heart.html' from target_acts where act_number = 3
+union all select id, 3, 'Serune: Graves of the Hollow', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/Serune/sidequest-serune-part1.htm' from target_acts where act_number = 3
+union all select id, 4, 'Velra: Ledger of Ash', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/velra/velra-sidequest-LedgerOfAsh.htm' from target_acts where act_number = 3
+union all select id, 5, 'Ilexi: Fragments of the Machine', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/ilexi/ilexi-sidequest.htm' from target_acts where act_number = 3
+union all select id, 6, 'Lazlo: The Ice Below', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/lazlo/lazlo-sidequest-part1.htm' from target_acts where act_number = 3
 on conflict (act_id, scene_number, title) do update set
   kind = excluded.kind,
   html_path = excluded.html_path;
@@ -159,6 +188,34 @@ union all
 select id, 2, 'The First Strike', 'subscene', null, 'The ambush resolves into action or a tense social standoff.' from target_scenes where act_number = 2 and scene_number = 2
 union all
 select id, 1, 'Counting the Blades', 'subscene', null, 'The party reads the merchant swap before deciding whether to interfere.' from target_scenes where act_number = 2 and scene_number = 4
+union all
+select id, 1, 'Sava Reward', 'reward', '/modules/frost-in-the-vault/silverhall/Sidequests/Sava/encounter-sava-reward.htm', 'Reward beat for Sava.' from target_scenes where act_number = 3 and scene_number = 1
+union all
+select id, 2, 'Sava Reward Variant', 'reward', '/modules/frost-in-the-vault/silverhall/Sidequests/Sava/encounter-sava-reward2.htm', 'Expanded reward beat for Sava.' from target_scenes where act_number = 3 and scene_number = 1
+union all
+select id, 1, 'Black Shard Relics', 'prop', '/modules/frost-in-the-vault/silverhall/Sidequests/Serune/black-shard-relics-serune.htm', 'Serune relic reference.' from target_scenes where act_number = 3 and scene_number = 3
+union all
+select id, 2, 'Serune Backstory', 'backstory', '/modules/frost-in-the-vault/silverhall/Sidequests/Serune/serune-backstory.htm', 'Serune backstory reference.' from target_scenes where act_number = 3 and scene_number = 3
+union all
+select id, 3, 'Tomb of Glass', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/Serune/sidequest-serune-part2.htm', 'Second Serune sidequest beat.' from target_scenes where act_number = 3 and scene_number = 3
+union all
+select id, 4, 'Tomb of Glass Narrative', 'narrative', '/modules/frost-in-the-vault/silverhall/Sidequests/Serune/sidequest-serune-part2_narrative.htm', 'Narrative version of the Tomb of Glass beat.' from target_scenes where act_number = 3 and scene_number = 3
+union all
+select id, 1, 'Chain of Reversal', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/velra/velra-sidequest-ChainOfReversal.htm', 'Velra follow-up sidequest.' from target_scenes where act_number = 3 and scene_number = 4
+union all
+select id, 2, 'Velra Coin Prop', 'prop', '/modules/frost-in-the-vault/silverhall/Sidequests/velra/velra-coins.htm', 'Velra coin reference.' from target_scenes where act_number = 3 and scene_number = 4
+union all
+select id, 1, 'Fragments Narrative I', 'narrative', '/modules/frost-in-the-vault/silverhall/Sidequests/ilexi/ilexi-narrative_1.htm', 'Ilexi narrative beat.' from target_scenes where act_number = 3 and scene_number = 5
+union all
+select id, 2, 'Stelladex Observation', 'narrative', '/modules/frost-in-the-vault/silverhall/Sidequests/ilexi/ilexi-narrative_2.htm', 'Ilexi narrative beat.' from target_scenes where act_number = 3 and scene_number = 5
+union all
+select id, 3, 'Tinctwhistle Goggles', 'prop', '/modules/frost-in-the-vault/silverhall/Sidequests/ilexi/ilexi-goggle.htm', 'Ilexi item reference.' from target_scenes where act_number = 3 and scene_number = 5
+union all
+select id, 1, 'Vault of the Pale Ledger', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/lazlo/lazlo-sidequest-part2.htm', 'Second Lazlo sidequest beat.' from target_scenes where act_number = 3 and scene_number = 6
+union all
+select id, 2, 'Frozen Heart Set', 'prop', '/modules/frost-in-the-vault/silverhall/Sidequests/lazlo/lazlo-frozen-heart-set.htm', 'Lazlo item reference.' from target_scenes where act_number = 3 and scene_number = 6
+union all
+select id, 3, 'Vault of the Pale Ledger Finale', 'sidequest', '/modules/frost-in-the-vault/silverhall/Sidequests/lazlo/lazlo-sidequest-part3.htm', 'Third Lazlo sidequest beat.' from target_scenes where act_number = 3 and scene_number = 6
 on conflict (scene_id, subscene_number, title) do update set
   kind = excluded.kind,
   html_path = excluded.html_path,
