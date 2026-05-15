@@ -135,6 +135,7 @@ function ModuleDetail({ module }) {
                           </a>
                           <NarrativeList narratives={scene.narratives ?? []} compact />
                           <HandoutList handouts={scene.handouts ?? []} compact />
+                          <EncounterList encounters={scene.encounters ?? []} compact />
                           <SubsceneList subscenes={scene.subscenes ?? []} />
                         </article>
                       ))}
@@ -239,6 +240,28 @@ function SubsceneList({ subscenes }) {
           </div>
           <NarrativeList narratives={subscene.narratives ?? []} compact />
           <HandoutList handouts={subscene.handouts ?? []} compact />
+          <EncounterList encounters={subscene.encounters ?? []} compact />
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function EncounterList({ encounters, compact = false }) {
+  if (encounters.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className={`encounter-list ${compact ? "is-compact" : ""}`}>
+      {encounters.map((encounter) => (
+        <article className="encounter-row" key={encounter.title}>
+          <div>
+            <span>{encounter.encounterType}</span>
+            <strong>{encounter.title}</strong>
+            {encounter.difficulty ? <small>{encounter.difficulty}</small> : null}
+          </div>
+          {encounter.sourcePath ? <a href={encounter.sourcePath}>Open</a> : null}
         </article>
       ))}
     </div>

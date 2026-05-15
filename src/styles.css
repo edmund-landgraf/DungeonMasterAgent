@@ -337,14 +337,16 @@ h5 {
 }
 
 .narrative-list,
-.handout-list {
+.handout-list,
+.encounter-list {
   display: grid;
   gap: 10px;
   padding: 12px 16px 16px;
 }
 
 .narrative-list.is-compact,
-.handout-list.is-compact {
+.handout-list.is-compact,
+.encounter-list.is-compact {
   padding-top: 0;
 }
 
@@ -394,6 +396,45 @@ h5 {
   margin-top: 2px;
   color: #697572;
   font-size: 0.78rem;
+}
+
+.encounter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #d8c9bd;
+  border-radius: 7px;
+  padding: 10px 12px;
+  background: #fffdf9;
+}
+
+.encounter-row div {
+  display: grid;
+  gap: 3px;
+}
+
+.encounter-row span {
+  color: #8f4c30;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.encounter-row small {
+  color: #697572;
+  font-size: 0.78rem;
+}
+
+.encounter-row a {
+  border: 1px solid #d4d8d2;
+  border-radius: 5px;
+  padding: 4px 8px;
+  color: #294744;
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .roster-row {

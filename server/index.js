@@ -196,6 +196,17 @@ async function loadModulesFromDatabase() {
             [scene.id]
           );
 
+          const sceneEncounters = await client.query(
+            `
+              select title, encounter_type as "encounterType", difficulty,
+                source_path as "sourcePath", notes
+              from encounters
+              where scene_id = $1 and subscene_id is null
+              order by title
+            `,
+            [scene.id]
+          );
+
           const subscenes = await client.query(
             `
               select id, subscene_number as number, title, kind, html_path as path, summary
@@ -228,11 +239,23 @@ async function loadModulesFromDatabase() {
               [subscene.id]
             );
 
+            const subsceneEncounters = await client.query(
+              `
+                select title, encounter_type as "encounterType", difficulty,
+                  source_path as "sourcePath", notes
+                from encounters
+                where subscene_id = $1
+                order by title
+              `,
+              [subscene.id]
+            );
+
             const { id: _subsceneId, ...subscenePayload } = subscene;
             hydratedSubscenes.push({
               ...subscenePayload,
               narratives: subsceneNarratives.rows,
-              handouts: subsceneHandouts.rows
+              handouts: subsceneHandouts.rows,
+              encounters: subsceneEncounters.rows
             });
           }
 
@@ -241,6 +264,7 @@ async function loadModulesFromDatabase() {
             ...scenePayload,
             narratives: sceneNarratives.rows,
             handouts: sceneHandouts.rows,
+            encounters: sceneEncounters.rows,
             subscenes: hydratedSubscenes
           });
         }

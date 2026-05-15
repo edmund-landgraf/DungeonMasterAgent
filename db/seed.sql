@@ -175,6 +175,36 @@ on conflict (bestiary_entry_id, act_id, scene_id, subscene_id) do update set
   label = excluded.label,
   notes = excluded.notes;
 
+with frost as (select id from modules where slug = 'frost-in-the-vault'),
+scene_targets as (
+  select s.id, a.act_number, s.scene_number
+  from scenes s
+  join acts a on a.id = s.act_id
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into encounters (module_id, scene_id, subscene_id, title, encounter_type, difficulty, source_path, notes)
+select frost.id, scene_targets.id, null::bigint, 'Warehouse Gang', 'combat', 'Level 1 encounter', '/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html', 'Primary Act I combat encounter.' from frost, scene_targets where act_number = 1 and scene_number = 4
+union all
+select frost.id, scene_targets.id, null::bigint, 'Vault of Echoes: Hollow Chill Clue', 'hazard', 'TBD', '/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html', 'Environmental threat or investigation challenge.' from frost, scene_targets where act_number = 1 and scene_number = 3
+union all
+select frost.id, scene_targets.id, null::bigint, 'Ambush', 'combat', 'TBD', '/modules/frost-in-the-vault/silverhall/Modules/a2-s2-ambush.html', 'Street ambush challenge.' from frost, scene_targets where act_number = 2 and scene_number = 2
+union all
+select frost.id, scene_targets.id, null::bigint, 'Breach of Contract', 'infiltration', 'TBD', '/modules/frost-in-the-vault/silverhall/Modules/a2-s3-breach-of-contract.html', 'Vault infiltration challenge.' from frost, scene_targets where act_number = 2 and scene_number = 3
+union all
+select frost.id, scene_targets.id, null::bigint, 'Silver for Swords', 'negotiation', 'TBD', '/modules/frost-in-the-vault/silverhall/Modules/a2-s4.1-silver-for-swords.html', 'Merchant swap challenge.' from frost, scene_targets where act_number = 2 and scene_number = 4
+union all
+select frost.id, scene_targets.id, null::bigint, 'The Delivery', 'negotiation', 'TBD', '/modules/frost-in-the-vault/silverhall/Modules/a2-s4.2-the-delivery.html', 'Coin-for-loyalty challenge.' from frost, scene_targets where act_number = 2 and scene_number = 5
+union all
+select frost.id, scene_targets.id, null::bigint, 'Sava: Snarehouse', 'combat', 'TBD', '/modules/frost-in-the-vault/silverhall/Sidequests/Sava/encounter-snarehouse.htm', 'Sava sidequest encounter.' from frost, scene_targets where act_number = 3 and scene_number = 1
+on conflict (module_id, title) do update set
+  scene_id = excluded.scene_id,
+  subscene_id = excluded.subscene_id,
+  encounter_type = excluded.encounter_type,
+  difficulty = excluded.difficulty,
+  source_path = excluded.source_path,
+  notes = excluded.notes;
+
 with target_scenes as (
   select s.id, a.act_number, s.scene_number
   from scenes s
@@ -220,6 +250,27 @@ on conflict (scene_id, subscene_number, title) do update set
   kind = excluded.kind,
   html_path = excluded.html_path,
   summary = excluded.summary;
+
+with frost as (select id from modules where slug = 'frost-in-the-vault'),
+subscene_targets as (
+  select ss.id, a.act_number, s.scene_number, ss.subscene_number
+  from subscenes ss
+  join scenes s on s.id = ss.scene_id
+  join acts a on a.id = s.act_id
+  join modules m on m.id = a.module_id
+  where m.slug = 'frost-in-the-vault'
+)
+insert into encounters (module_id, scene_id, subscene_id, title, encounter_type, difficulty, source_path, notes)
+select frost.id, null::bigint, subscene_targets.id, 'Ambush: First Strike', 'combat', 'TBD', null, 'Subscene-level combat beat.' from frost, subscene_targets where act_number = 2 and scene_number = 2 and subscene_number = 2
+union all
+select frost.id, null::bigint, subscene_targets.id, 'Warehouse Defense Traps', 'trap', 'CR 3-4', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Trap challenge from the Hollow Chill bestiary.' from frost, subscene_targets where act_number = 3 and scene_number = 1 and subscene_number = 1
+on conflict (module_id, title) do update set
+  scene_id = excluded.scene_id,
+  subscene_id = excluded.subscene_id,
+  encounter_type = excluded.encounter_type,
+  difficulty = excluded.difficulty,
+  source_path = excluded.source_path,
+  notes = excluded.notes;
 
 with target_acts as (
   select a.id, a.act_number

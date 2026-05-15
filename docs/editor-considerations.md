@@ -6,6 +6,7 @@ Do not build the editor until the read model stabilizes. The current schema is r
 - Act
 - Scene
 - Subscene
+- Encounter
 - Act narrative
 - Scene narrative
 - Subscene narrative
@@ -23,6 +24,7 @@ The user should confirm placement before import:
 - Major chapter headings map to `acts`.
 - Numbered encounters or story beats map to `scenes`.
 - Smaller beats inside a scene map to `subscenes`.
+- Actual gameplay challenges map to `encounters`: combat, traps, chases, negotiations, infiltration, hazards, or skill challenges.
 - Read-aloud text, GM notes, boxed text, and lore paragraphs map to narratives.
 - Player-facing documents map to handouts.
 - Creatures, hazards, monsters, and encounter stat references map to bestiary entries.
@@ -41,3 +43,14 @@ If upload history becomes important, add:
 - `content_import_suggestions`
 
 Those tables should reference the final target rows only after user confirmation.
+
+## Content Hierarchy
+
+Use this model when placing imported content:
+
+| Layer | Purpose | Example |
+| --- | --- | --- |
+| Act | Major campaign phase | Tracking the Coin Network |
+| Scene | Large story segment or location | The Docks of Silverhall |
+| Subscene | Distinct objective or transition | Interview the Dockworkers |
+| Encounter | Actual gameplay challenge | Combat, trap, chase, or negotiation |

@@ -233,14 +233,43 @@ alter table handouts add constraint handouts_target_required
 
 create table if not exists encounters (
   id bigserial primary key,
-  scene_id bigint references scenes(id) on delete set null,
   module_id bigint not null references modules(id) on delete cascade,
+  scene_id bigint references scenes(id) on delete cascade,
+  subscene_id bigint references subscenes(id) on delete cascade,
   title text not null,
+  encounter_type text not null default 'challenge',
   difficulty text,
   source_path text,
   notes text,
-  unique (module_id, title)
+  unique (module_id, title),
+  constraint encounters_target_required check (
+    num_nonnulls(scene_id, subscene_id) >= 1
+  )
 );
+
+alter table encounters add column if not exists subscene_id bigint references subscenes(id) on delete cascade;
+alter table encounters add column if not exists encounter_type text not null default 'challenge';
+
+do $$
+declare
+  constraint_record record;
+begin
+  for constraint_record in
+    select conname
+    from pg_constraint
+    where conrelid = 'encounters'::regclass
+      and contype = 'c'
+      and conname <> 'encounters_target_required'
+      and pg_get_constraintdef(oid) like '%scene_id%'
+  loop
+    execute format('alter table encounters drop constraint %I', constraint_record.conname);
+  end loop;
+end
+$$;
+
+alter table encounters drop constraint if exists encounters_target_required;
+alter table encounters add constraint encounters_target_required
+  check (num_nonnulls(scene_id, subscene_id) >= 1);
 
 create table if not exists scene_assets (
   id bigserial primary key,
