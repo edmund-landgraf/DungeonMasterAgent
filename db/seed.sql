@@ -62,7 +62,19 @@ with frost as (select id from modules where slug = 'frost-in-the-vault')
 insert into bestiary_entries (module_id, name, creature_type, level_text, role, stat_block_path, notes)
 select id, 'Warehouse Gang', 'Humanoid', 'Level 1 encounter', 'Street-level opposition', '/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html', 'Use as the Act I pressure encounter.' from frost
 union all
-select id, 'Hollow Chill', 'Hazard or creature', 'TBD', 'Environmental threat', '/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html', 'Player-facing science handout exists; tactical treatment should stay separate.' from frost
+select id, 'Hollow Chill', 'Hazard or creature', 'TBD', 'Environmental threat', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Bestiary collection for Hollow Chill entities.' from frost
+union all
+select id, 'Coldheart Injector', 'Medium Construct', 'CR 2', 'Hollow Chill entity', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Imported from Hollow Chill bestiary.' from frost
+union all
+select id, 'Brinebound Laborer', 'Medium Undead', 'CR 1', 'Hollow Chill entity', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Imported from Hollow Chill bestiary.' from frost
+union all
+select id, 'Hollowborn Stalker', 'Medium Fey (Cold)', 'CR 3', 'Hollow Chill entity', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Imported from Hollow Chill bestiary.' from frost
+union all
+select id, 'Oreweaver Shade', 'Medium Outsider (Cold, Extraplanar)', 'CR 4', 'Hollow Chill entity', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Imported from Hollow Chill bestiary.' from frost
+union all
+select id, 'Lurask the Foldbound', 'Medium Aberration', 'CR 5', 'Hollow Chill entity', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Imported from Hollow Chill bestiary.' from frost
+union all
+select id, 'Warehouse Defense Traps', 'Magical Traps', 'CR 3-4', 'Warehouse defense', '/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html', 'Imported from Hollow Chill bestiary.' from frost
 on conflict (module_id, name) do update set
   creature_type = excluded.creature_type,
   level_text = excluded.level_text,
@@ -112,6 +124,21 @@ appearances as (
   where act_id in (select id from acts where act_number = 1)
     and scene_id in (select id from scenes where scene_number = 3)
     and bestiary_entry_id in (select id from bestiary_entries where name = 'Hollow Chill')
+  union all
+  select bestiary_entry_id, act_id, scene_id, null::bigint, 'Hollow Chill bestiary', 'Imported from hollowchill.html.'
+  from beast_targets
+  where act_id in (select id from acts where act_number = 1)
+    and scene_id in (select id from scenes where scene_number = 3)
+    and bestiary_entry_id in (
+      select id from bestiary_entries
+      where name in ('Coldheart Injector', 'Brinebound Laborer', 'Hollowborn Stalker', 'Oreweaver Shade', 'Lurask the Foldbound')
+    )
+  union all
+  select bestiary_entry_id, act_id, scene_id, null::bigint, 'Warehouse defense', 'Imported from hollowchill.html.'
+  from beast_targets
+  where act_id in (select id from acts where act_number = 1)
+    and scene_id in (select id from scenes where scene_number = 4)
+    and bestiary_entry_id in (select id from bestiary_entries where name = 'Warehouse Defense Traps')
 )
 insert into bestiary_appearances (bestiary_entry_id, act_id, scene_id, subscene_id, label, notes)
 select bestiary_entry_id, act_id, scene_id, subscene_id, label, notes from appearances

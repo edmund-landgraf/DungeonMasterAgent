@@ -237,8 +237,8 @@ export const modules = [
         creatureType: "Hazard or creature",
         levelText: "TBD",
         role: "Environmental threat",
-        statBlockPath: "/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html",
-        notes: "Player-facing science handout exists; tactical treatment should stay separate.",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Bestiary collection for Hollow Chill entities.",
         appearances: [
           {
             label: "Vault clue",
@@ -249,6 +249,126 @@ export const modules = [
             subsceneNumber: null,
             subsceneTitle: null,
             notes: "Referenced as an environmental threat in vault science material."
+          }
+        ]
+      },
+      {
+        name: "Coldheart Injector",
+        creatureType: "Medium Construct",
+        levelText: "CR 2",
+        role: "Hollow Chill entity",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Imported from Hollow Chill bestiary.",
+        appearances: [
+          {
+            label: "Hollow Chill bestiary",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 3,
+            sceneTitle: "Vault of Echoes",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Imported from hollowchill.html."
+          }
+        ]
+      },
+      {
+        name: "Brinebound Laborer",
+        creatureType: "Medium Undead",
+        levelText: "CR 1",
+        role: "Hollow Chill entity",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Imported from Hollow Chill bestiary.",
+        appearances: [
+          {
+            label: "Hollow Chill bestiary",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 3,
+            sceneTitle: "Vault of Echoes",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Imported from hollowchill.html."
+          }
+        ]
+      },
+      {
+        name: "Hollowborn Stalker",
+        creatureType: "Medium Fey (Cold)",
+        levelText: "CR 3",
+        role: "Hollow Chill entity",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Imported from Hollow Chill bestiary.",
+        appearances: [
+          {
+            label: "Hollow Chill bestiary",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 3,
+            sceneTitle: "Vault of Echoes",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Imported from hollowchill.html."
+          }
+        ]
+      },
+      {
+        name: "Oreweaver Shade",
+        creatureType: "Medium Outsider (Cold, Extraplanar)",
+        levelText: "CR 4",
+        role: "Hollow Chill entity",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Imported from Hollow Chill bestiary.",
+        appearances: [
+          {
+            label: "Hollow Chill bestiary",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 3,
+            sceneTitle: "Vault of Echoes",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Imported from hollowchill.html."
+          }
+        ]
+      },
+      {
+        name: "Lurask the Foldbound",
+        creatureType: "Medium Aberration",
+        levelText: "CR 5",
+        role: "Hollow Chill entity",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Imported from Hollow Chill bestiary.",
+        appearances: [
+          {
+            label: "Hollow Chill bestiary",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 3,
+            sceneTitle: "Vault of Echoes",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Imported from hollowchill.html."
+          }
+        ]
+      },
+      {
+        name: "Warehouse Defense Traps",
+        creatureType: "Magical Traps",
+        levelText: "CR 3-4",
+        role: "Warehouse defense",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Stat Blocks/Enemies - Bestiary/hollowchill.html",
+        notes: "Imported from Hollow Chill bestiary.",
+        appearances: [
+          {
+            label: "Warehouse defense",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 4,
+            sceneTitle: "Warehouse Gang",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Imported from hollowchill.html."
           }
         ]
       },
