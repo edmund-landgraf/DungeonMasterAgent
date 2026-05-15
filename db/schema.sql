@@ -136,6 +136,32 @@ create table if not exists npcs (
   unique (module_id, name)
 );
 
+create table if not exists bestiary_entries (
+  id bigserial primary key,
+  module_id bigint not null references modules(id) on delete cascade,
+  name text not null,
+  creature_type text,
+  level_text text,
+  role text,
+  stat_block_path text,
+  notes text,
+  unique (module_id, name)
+);
+
+create table if not exists bestiary_appearances (
+  id bigserial primary key,
+  bestiary_entry_id bigint not null references bestiary_entries(id) on delete cascade,
+  act_id bigint references acts(id) on delete cascade,
+  scene_id bigint references scenes(id) on delete cascade,
+  subscene_id bigint references subscenes(id) on delete cascade,
+  label text,
+  notes text,
+  unique (bestiary_entry_id, act_id, scene_id, subscene_id),
+  constraint bestiary_appearance_target_required check (
+    num_nonnulls(act_id, scene_id, subscene_id) >= 1
+  )
+);
+
 create table if not exists locations (
   id bigserial primary key,
   module_id bigint not null references modules(id) on delete cascade,

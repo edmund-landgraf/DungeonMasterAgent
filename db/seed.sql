@@ -58,6 +58,18 @@ on conflict (module_id, name) do update set
   role = excluded.role,
   sheet_path = excluded.sheet_path;
 
+with frost as (select id from modules where slug = 'frost-in-the-vault')
+insert into bestiary_entries (module_id, name, creature_type, level_text, role, stat_block_path, notes)
+select id, 'Warehouse Gang', 'Humanoid', 'Level 1 encounter', 'Street-level opposition', '/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html', 'Use as the Act I pressure encounter.' from frost
+union all
+select id, 'Hollow Chill', 'Hazard or creature', 'TBD', 'Environmental threat', '/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html', 'Player-facing science handout exists; tactical treatment should stay separate.' from frost
+on conflict (module_id, name) do update set
+  creature_type = excluded.creature_type,
+  level_text = excluded.level_text,
+  role = excluded.role,
+  stat_block_path = excluded.stat_block_path,
+  notes = excluded.notes;
+
 with target_acts as (
   select a.id, a.act_number
   from acts a
@@ -79,6 +91,33 @@ union all select id, 5, 'The Delivery', 'scene', '/modules/frost-in-the-vault/si
 on conflict (act_id, scene_number, title) do update set
   kind = excluded.kind,
   html_path = excluded.html_path;
+
+with beast_targets as (
+  select be.id as bestiary_entry_id, a.id as act_id, s.id as scene_id
+  from bestiary_entries be
+  join modules m on m.id = be.module_id
+  join acts a on a.module_id = m.id
+  join scenes s on s.act_id = a.id
+  where m.slug = 'frost-in-the-vault'
+),
+appearances as (
+  select bestiary_entry_id, act_id, scene_id, null::bigint as subscene_id, 'Act I encounter' as label, 'Appears as the warehouse opposition.' as notes
+  from beast_targets
+  where act_id in (select id from acts where act_number = 1)
+    and scene_id in (select id from scenes where scene_number = 4)
+    and bestiary_entry_id in (select id from bestiary_entries where name = 'Warehouse Gang')
+  union all
+  select bestiary_entry_id, act_id, scene_id, null::bigint, 'Vault clue', 'Referenced as an environmental threat in vault science material.'
+  from beast_targets
+  where act_id in (select id from acts where act_number = 1)
+    and scene_id in (select id from scenes where scene_number = 3)
+    and bestiary_entry_id in (select id from bestiary_entries where name = 'Hollow Chill')
+)
+insert into bestiary_appearances (bestiary_entry_id, act_id, scene_id, subscene_id, label, notes)
+select bestiary_entry_id, act_id, scene_id, subscene_id, label, notes from appearances
+on conflict (bestiary_entry_id, act_id, scene_id, subscene_id) do update set
+  label = excluded.label,
+  notes = excluded.notes;
 
 with target_scenes as (
   select s.id, a.act_number, s.scene_number

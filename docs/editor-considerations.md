@@ -10,6 +10,8 @@ Do not build the editor until the read model stabilizes. The current schema is r
 - Scene narrative
 - Subscene narrative
 - Act, scene, or subscene handout
+- Module bestiary entry
+- Bestiary appearance tag for an act, scene, or subscene
 
 ## Upload Flow
 
@@ -23,6 +25,8 @@ The user should confirm placement before import:
 - Smaller beats inside a scene map to `subscenes`.
 - Read-aloud text, GM notes, boxed text, and lore paragraphs map to narratives.
 - Player-facing documents map to handouts.
+- Creatures, hazards, monsters, and encounter stat references map to bestiary entries.
+- Mentions of where those creatures appear map to bestiary appearance tags.
 
 ## Formatting
 

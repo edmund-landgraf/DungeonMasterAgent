@@ -230,6 +230,48 @@ export const modules = [
     ],
     npcs: [
       { name: "Warehouse Gang", role: "Act I encounter", sheetPath: "/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html" }
+    ],
+    bestiary: [
+      {
+        name: "Hollow Chill",
+        creatureType: "Hazard or creature",
+        levelText: "TBD",
+        role: "Environmental threat",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Handouts + Props/science-hollow-chill-updated.html",
+        notes: "Player-facing science handout exists; tactical treatment should stay separate.",
+        appearances: [
+          {
+            label: "Vault clue",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 3,
+            sceneTitle: "Vault of Echoes",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Referenced as an environmental threat in vault science material."
+          }
+        ]
+      },
+      {
+        name: "Warehouse Gang",
+        creatureType: "Humanoid",
+        levelText: "Level 1 encounter",
+        role: "Street-level opposition",
+        statBlockPath: "/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html",
+        notes: "Use as the Act I pressure encounter.",
+        appearances: [
+          {
+            label: "Act I encounter",
+            actNumber: 1,
+            actTitle: "Dust in the Palm",
+            sceneNumber: 4,
+            sceneTitle: "Warehouse Gang",
+            subsceneNumber: null,
+            subsceneTitle: null,
+            notes: "Appears as the warehouse opposition."
+          }
+        ]
+      }
     ]
   },
   {
@@ -243,6 +285,7 @@ export const modules = [
     sourceRoot: "/modules/shrouded-lineage",
     acts: [],
     pcs: [],
-    npcs: []
+    npcs: [],
+    bestiary: []
   }
 ];

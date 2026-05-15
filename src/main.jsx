@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { BookOpen, Database, FileText, Users } from "lucide-react";
+import { BookOpen, Database, FileText, Shield, Users } from "lucide-react";
 import { modules as seedModules } from "./moduleSeed.js";
 import "./styles.css";
 
@@ -50,7 +50,8 @@ function App() {
         ),
       0
     ),
-    characters: modules.reduce((sum, module) => sum + module.pcs.length + module.npcs.length, 0)
+    characters: modules.reduce((sum, module) => sum + module.pcs.length + module.npcs.length, 0),
+    bestiary: modules.reduce((sum, module) => sum + (module.bestiary?.length ?? 0), 0)
   };
 
   return (
@@ -64,6 +65,7 @@ function App() {
           <span><BookOpen size={16} /> {totals.modules} modules</span>
           <span><FileText size={16} /> {totals.scenes} scenes</span>
           <span><Users size={16} /> {totals.characters} characters</span>
+          <span><Shield size={16} /> {totals.bestiary} bestiary</span>
           <span><Database size={16} /> Postgres ready</span>
         </div>
       </header>
@@ -149,11 +151,72 @@ function ModuleDetail({ module }) {
 
             <h3>NPCs and Encounters</h3>
             <Roster entries={module.npcs} emptyText="No NPCs loaded yet." />
+
+            <h3>Bestiary</h3>
+            <Bestiary entries={module.bestiary ?? []} />
           </section>
         </div>
       </div>
     </section>
   );
+}
+
+function Bestiary({ entries }) {
+  if (entries.length === 0) {
+    return <p className="empty-state">No bestiary entries loaded yet.</p>;
+  }
+
+  return (
+    <div className="bestiary-list">
+      {entries.map((entry) => (
+        <article className="bestiary-row" key={entry.name}>
+          <div className="bestiary-heading">
+            <div>
+              <strong>{entry.name}</strong>
+              <span>{[entry.creatureType, entry.levelText].filter(Boolean).join(" - ")}</span>
+            </div>
+            {entry.statBlockPath ? <a href={entry.statBlockPath}>Open</a> : null}
+          </div>
+          {entry.role ? <p>{entry.role}</p> : null}
+          <AppearanceList appearances={entry.appearances ?? []} />
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function AppearanceList({ appearances }) {
+  if (appearances.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="appearance-list">
+      {appearances.map((appearance) => (
+        <div
+          className="appearance-row"
+          key={`${appearance.label}-${appearance.actNumber}-${appearance.sceneNumber}-${appearance.subsceneNumber ?? "scene"}`}
+        >
+          <span>{appearance.label ?? "Appears"}</span>
+          <small>{formatAppearanceTarget(appearance)}</small>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function formatAppearanceTarget(appearance) {
+  const parts = [];
+  if (appearance.actNumber != null) {
+    parts.push(`Act ${appearance.actNumber}: ${appearance.actTitle}`);
+  }
+  if (appearance.sceneNumber != null) {
+    parts.push(`Scene ${appearance.sceneNumber}: ${appearance.sceneTitle}`);
+  }
+  if (appearance.subsceneNumber != null) {
+    parts.push(`Subscene ${appearance.subsceneNumber}: ${appearance.subsceneTitle}`);
+  }
+  return parts.join(" / ");
 }
 
 function SubsceneList({ subscenes }) {

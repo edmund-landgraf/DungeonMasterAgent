@@ -91,6 +91,42 @@ async function loadModulesFromDatabase() {
         [module.id]
       );
 
+      const bestiaryRows = await client.query(
+        `
+          select id, name, creature_type as "creatureType", level_text as "levelText",
+            role, stat_block_path as "statBlockPath", notes
+          from bestiary_entries
+          where module_id = $1
+          order by name
+        `,
+        [module.id]
+      );
+
+      const bestiary = [];
+      for (const entry of bestiaryRows.rows) {
+        const appearances = await client.query(
+          `
+            select ba.label, ba.notes,
+              a.act_number as "actNumber", a.title as "actTitle",
+              s.scene_number as "sceneNumber", s.title as "sceneTitle",
+              ss.subscene_number as "subsceneNumber", ss.title as "subsceneTitle"
+            from bestiary_appearances ba
+            left join acts a on a.id = ba.act_id
+            left join scenes s on s.id = ba.scene_id
+            left join subscenes ss on ss.id = ba.subscene_id
+            where ba.bestiary_entry_id = $1
+            order by a.act_number, s.scene_number, ss.subscene_number, ba.label
+          `,
+          [entry.id]
+        );
+
+        const { id: _bestiaryEntryId, ...entryPayload } = entry;
+        bestiary.push({
+          ...entryPayload,
+          appearances: appearances.rows
+        });
+      }
+
       const hydratedActs = [];
       for (const act of acts.rows) {
         const actNarratives = await client.query(
@@ -213,7 +249,8 @@ async function loadModulesFromDatabase() {
         sourceRoot: module.sourceRoot,
         acts: hydratedActs,
         pcs: pcs.rows,
-        npcs: npcs.rows
+        npcs: npcs.rows,
+        bestiary
       });
     }
 
