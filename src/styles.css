@@ -210,6 +210,45 @@ h5 {
   line-height: 1.55;
 }
 
+.marketing-blurb {
+  margin-top: 14px;
+  max-width: 86ch;
+  padding: 12px 14px;
+  border: 1px solid rgba(16, 24, 40, 0.12);
+  border-radius: 8px;
+  background: rgba(250, 250, 252, 0.9);
+  color: #1b2423;
+  line-height: 1.6;
+}
+
+.marketing-blurb p {
+  margin: 0 0 10px 0;
+}
+
+.marketing-blurb p:last-child {
+  margin-bottom: 0;
+}
+
+.marketing-blurb table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 0 0;
+  font-size: 0.92rem;
+}
+
+.marketing-blurb th,
+.marketing-blurb td {
+  border: 1px solid rgba(16, 24, 40, 0.12);
+  padding: 6px 8px;
+  vertical-align: top;
+}
+
+.marketing-blurb th {
+  background: rgba(41, 71, 68, 0.08);
+  font-weight: 800;
+  text-align: left;
+}
+
 .content-columns {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.8fr);
@@ -266,44 +305,43 @@ h5 {
   border-radius: 0;
 }
 
-.subscene-list {
+.event-list {
   display: grid;
   gap: 10px;
   padding: 0 16px 16px 34px;
 }
 
-.subscene-block {
+.event-row {
   border-left: 3px solid #b7c6c1;
   border-radius: 6px;
   background: #fbfaf7;
 }
 
-.subscene-heading {
+.event-row > div:first-child {
   display: grid;
   gap: 4px;
   padding: 12px 12px 2px;
 }
 
-.subscene-heading span {
+.event-row span {
   color: #697572;
   font-size: 0.7rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.subscene-heading a,
-.subscene-heading strong {
+.event-row a,
+.event-row strong {
   color: #273233;
   font-weight: 850;
   text-decoration: none;
 }
 
-.subscene-heading a:hover {
+.event-row a:hover {
   color: #245c59;
 }
 
-.subscene-heading p {
-  margin-bottom: 0;
+.event-row small {
   color: #62706d;
   font-size: 0.9rem;
   line-height: 1.45;
@@ -399,9 +437,7 @@ h5 {
 }
 
 .encounter-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
   gap: 12px;
   border: 1px solid #d8c9bd;
   border-radius: 7px;
@@ -409,7 +445,14 @@ h5 {
   background: #fffdf9;
 }
 
-.encounter-row div {
+.encounter-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.encounter-heading div {
   display: grid;
   gap: 3px;
 }

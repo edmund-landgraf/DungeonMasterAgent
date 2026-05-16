@@ -23,6 +23,9 @@ const targetAdminUrl = new URL(adminUrl.toString());
 targetAdminUrl.pathname = `/${databaseName}`;
 const client = new pg.Client({ connectionString: targetAdminUrl.toString() });
 await client.connect();
+// Idempotent init: start from a clean public schema so seeds never conflict with old rows.
+await client.query("drop schema if exists public cascade");
+await client.query("create schema public");
 for (const file of ["schema.sql", "seed.sql", "roles.sql"]) {
   const sql = await fs.readFile(path.join(__dirname, "..", "db", file), "utf8");
   await client.query(sql);

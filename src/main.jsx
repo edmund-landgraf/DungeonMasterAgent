@@ -43,11 +43,14 @@ function App() {
       (sum, module) =>
         sum +
         module.acts.reduce(
-          (actSum, act) =>
-            actSum +
-            act.scenes.reduce((sceneSum, scene) => sceneSum + 1 + (scene.subscenes?.length ?? 0), 0),
+          (actSum, act) => actSum + act.scenes.length,
           0
         ),
+      0
+    ),
+    encounters: modules.reduce(
+      (sum, module) =>
+        sum + module.acts.reduce((actSum, act) => actSum + act.scenes.reduce((sceneSum, scene) => sceneSum + (scene.encounters?.length ?? 0), 0), 0),
       0
     ),
     characters: modules.reduce((sum, module) => sum + module.pcs.length + module.npcs.length, 0),
@@ -64,6 +67,7 @@ function App() {
         <div className="status-strip" aria-label="Project status">
           <span><BookOpen size={16} /> {totals.modules} modules</span>
           <span><FileText size={16} /> {totals.scenes} scenes</span>
+          <span><Shield size={16} /> {totals.encounters} encounters</span>
           <span><Users size={16} /> {totals.characters} characters</span>
           <span><Shield size={16} /> {totals.bestiary} bestiary</span>
           <span><Database size={16} /> Postgres ready</span>
@@ -109,6 +113,12 @@ function ModuleDetail({ module }) {
         </div>
 
         <p className="summary">{module.summary}</p>
+        {module.marketingBlurbHtml ? (
+          <div
+            className="marketing-blurb"
+            dangerouslySetInnerHTML={{ __html: module.marketingBlurbHtml }}
+          />
+        ) : null}
 
         <div className="content-columns">
           <section>
@@ -136,7 +146,6 @@ function ModuleDetail({ module }) {
                           <NarrativeList narratives={scene.narratives ?? []} compact />
                           <HandoutList handouts={scene.handouts ?? []} compact />
                           <EncounterList encounters={scene.encounters ?? []} compact />
-                          <SubsceneList subscenes={scene.subscenes ?? []} />
                         </article>
                       ))}
                     </div>
@@ -155,6 +164,9 @@ function ModuleDetail({ module }) {
 
             <h3>Bestiary</h3>
             <Bestiary entries={module.bestiary ?? []} />
+
+            <h3>Items and Magic</h3>
+            <Items entries={module.items ?? []} />
           </section>
         </div>
       </div>
@@ -186,6 +198,30 @@ function Bestiary({ entries }) {
   );
 }
 
+function Items({ entries }) {
+  if (entries.length === 0) {
+    return <p className="empty-state">No items loaded yet.</p>;
+  }
+
+  return (
+    <div className="bestiary-list">
+      {entries.map((entry) => (
+        <article className="bestiary-row" key={entry.name}>
+          <div className="bestiary-heading">
+            <div>
+              <strong>{entry.name}</strong>
+              <span>{[entry.itemType, entry.rarity].filter(Boolean).join(" - ")}</span>
+            </div>
+            {entry.htmlPath ? <a href={entry.htmlPath}>Open</a> : null}
+          </div>
+          {entry.summary ? <p>{entry.summary}</p> : null}
+          <AppearanceList appearances={entry.appearances ?? []} />
+        </article>
+      ))}
+    </div>
+  );
+}
+
 function AppearanceList({ appearances }) {
   if (appearances.length === 0) {
     return null;
@@ -196,7 +232,7 @@ function AppearanceList({ appearances }) {
       {appearances.map((appearance) => (
         <div
           className="appearance-row"
-          key={`${appearance.label}-${appearance.actNumber}-${appearance.sceneNumber}-${appearance.subsceneNumber ?? "scene"}`}
+          key={`${appearance.label}-${appearance.actNumber}-${appearance.sceneNumber}-${appearance.encounterTitle ?? "scene"}-${appearance.eventNumber ?? "encounter"}`}
         >
           <span>{appearance.label ?? "Appears"}</span>
           <small>{formatAppearanceTarget(appearance)}</small>
@@ -214,37 +250,13 @@ function formatAppearanceTarget(appearance) {
   if (appearance.sceneNumber != null) {
     parts.push(`Scene ${appearance.sceneNumber}: ${appearance.sceneTitle}`);
   }
-  if (appearance.subsceneNumber != null) {
-    parts.push(`Subscene ${appearance.subsceneNumber}: ${appearance.subsceneTitle}`);
+  if (appearance.encounterTitle) {
+    parts.push(`Encounter: ${appearance.encounterTitle}`);
+  }
+  if (appearance.eventNumber != null) {
+    parts.push(`Event ${appearance.eventNumber}: ${appearance.eventTitle}`);
   }
   return parts.join(" / ");
-}
-
-function SubsceneList({ subscenes }) {
-  if (subscenes.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="subscene-list">
-      {subscenes.map((subscene) => (
-        <article className="subscene-block" key={`${subscene.number}-${subscene.title}`}>
-          <div className="subscene-heading">
-            <span>{subscene.kind}</span>
-            {subscene.path ? (
-              <a href={subscene.path}>{subscene.title}</a>
-            ) : (
-              <strong>{subscene.title}</strong>
-            )}
-            {subscene.summary ? <p>{subscene.summary}</p> : null}
-          </div>
-          <NarrativeList narratives={subscene.narratives ?? []} compact />
-          <HandoutList handouts={subscene.handouts ?? []} compact />
-          <EncounterList encounters={subscene.encounters ?? []} compact />
-        </article>
-      ))}
-    </div>
-  );
 }
 
 function EncounterList({ encounters, compact = false }) {
@@ -256,12 +268,37 @@ function EncounterList({ encounters, compact = false }) {
     <div className={`encounter-list ${compact ? "is-compact" : ""}`}>
       {encounters.map((encounter) => (
         <article className="encounter-row" key={encounter.title}>
-          <div>
-            <span>{encounter.encounterType}</span>
-            <strong>{encounter.title}</strong>
-            {encounter.difficulty ? <small>{encounter.difficulty}</small> : null}
+          <div className="encounter-heading">
+            <div>
+              <span>{encounter.encounterType}</span>
+              <strong>{encounter.title}</strong>
+              {encounter.difficulty ? <small>{encounter.difficulty}</small> : null}
+            </div>
+            {encounter.sourcePath ? <a href={encounter.sourcePath}>Open</a> : null}
           </div>
-          {encounter.sourcePath ? <a href={encounter.sourcePath}>Open</a> : null}
+          <EventList events={encounter.events ?? []} />
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function EventList({ events }) {
+  if (events.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="event-list">
+      {events.map((event) => (
+        <article className="event-row" key={`${event.number}-${event.title}`}>
+          <div>
+            <span>{event.eventType}</span>
+            {event.path ? <a href={event.path}>{event.title}</a> : <strong>{event.title}</strong>}
+            {event.summary ? <small>{event.summary}</small> : null}
+          </div>
+          <NarrativeList narratives={event.narratives ?? []} compact />
+          <HandoutList handouts={event.handouts ?? []} compact />
         </article>
       ))}
     </div>
@@ -326,6 +363,11 @@ function Roster({ entries, emptyText }) {
             <strong>{entry.name}</strong>
             <span>{entry.ancestry ?? entry.role}</span>
           </a>
+          {entry.backstoryHtmlPath ? (
+            <div className="resource-list">
+              <a href={entry.backstoryHtmlPath}>Backstory</a>
+            </div>
+          ) : null}
           {entry.resources?.length > 0 ? (
             <div className="resource-list">
               {entry.resources.map((resource) => (

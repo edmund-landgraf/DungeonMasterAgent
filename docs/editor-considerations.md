@@ -5,14 +5,14 @@ Do not build the editor until the read model stabilizes. The current schema is r
 - Module
 - Act
 - Scene
-- Subscene
 - Encounter
+- Event/Beat
 - Act narrative
 - Scene narrative
-- Subscene narrative
-- Act, scene, or subscene handout
+- Event/Beat narrative
+- Act, scene, encounter, or event handout
 - Module bestiary entry
-- Bestiary appearance tag for an act, scene, or subscene
+- Bestiary appearance tag for an act, scene, encounter, or event
 
 ## Upload Flow
 
@@ -23,8 +23,8 @@ The user should confirm placement before import:
 - Adventure shell maps to `modules`.
 - Major chapter headings map to `acts`.
 - Numbered encounters or story beats map to `scenes`.
-- Smaller beats inside a scene map to `subscenes`.
 - Actual gameplay challenges map to `encounters`: combat, traps, chases, negotiations, infiltration, hazards, or skill challenges.
+- Smaller beats inside a gameplay challenge map to `encounter_events`.
 - Read-aloud text, GM notes, boxed text, and lore paragraphs map to narratives.
 - Player-facing documents map to handouts.
 - Creatures, hazards, monsters, and encounter stat references map to bestiary entries.
@@ -52,5 +52,5 @@ Use this model when placing imported content:
 | --- | --- | --- |
 | Act | Major campaign phase | Tracking the Coin Network |
 | Scene | Large story segment or location | The Docks of Silverhall |
-| Subscene | Distinct objective or transition | Interview the Dockworkers |
 | Encounter | Actual gameplay challenge | Combat, trap, chase, or negotiation |
+| Event/Beat | Optional objective, transition, or beat inside an encounter | Interview the Dockworkers |

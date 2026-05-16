@@ -111,9 +111,9 @@ export const modules = [
           },
           {
             number: 4,
-            title: "Warehouse Gang",
+            title: "Roomstompers Raunch",
             path: "/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html",
-            kind: "encounter",
+            kind: "scene",
             narratives: [],
             handouts: []
           }
@@ -145,34 +145,42 @@ export const modules = [
               }
             ],
             handouts: [],
-            subscenes: [
+            encounters: [
               {
-                number: 1,
-                title: "Approach Through the Weather",
-                kind: "subscene",
-                summary: "A short setup beat before the ambush becomes visible.",
-                narratives: [
+                title: "Ambush",
+                encounterType: "combat",
+                difficulty: "TBD",
+                sourcePath: "/modules/frost-in-the-vault/silverhall/Modules/a2-s2-ambush.html",
+                events: [
                   {
-                    title: "Weather Read",
-                    body: "<p>Sleet turns the street lamps into dull halos. Wagon tracks vanish quickly here, but one set of prints keeps its shape a little too cleanly.</p>",
-                    bodyFormat: "html"
-                  }
-                ],
-                handouts: []
-              },
-              {
-                number: 2,
-                title: "The First Strike",
-                kind: "subscene",
-                summary: "The ambush resolves into action or a tense social standoff.",
-                narratives: [
+                    eventNumber: 1,
+                    title: "Approach Through the Weather",
+                    eventType: "setup",
+                    summary: "A short setup beat before the ambush becomes visible.",
+                    narratives: [
+                      {
+                        title: "Weather Read",
+                        body: "<p>Sleet turns the street lamps into dull halos. Wagon tracks vanish quickly here, but one set of prints keeps its shape a little too cleanly.</p>",
+                        bodyFormat: "html"
+                      }
+                    ],
+                    handouts: []
+                  },
                   {
-                    title: "Action Beat",
-                    body: "<p>The first attacker moves when the cart wheel snaps. It is staged, loud, and meant to make bystanders look away.</p>",
-                    bodyFormat: "html"
+                    eventNumber: 2,
+                    title: "The First Strike",
+                    eventType: "combat",
+                    summary: "The ambush resolves into action or a tense social standoff.",
+                    narratives: [
+                      {
+                        title: "Action Beat",
+                        body: "<p>The first attacker moves when the cart wheel snaps. It is staged, loud, and meant to make bystanders look away.</p>",
+                        bodyFormat: "html"
+                      }
+                    ],
+                    handouts: []
                   }
-                ],
-                handouts: []
+                ]
               }
             ]
           },
@@ -191,20 +199,28 @@ export const modules = [
             kind: "scene",
             narratives: [],
             handouts: [],
-            subscenes: [
+            encounters: [
               {
-                number: 1,
-                title: "Counting the Blades",
-                kind: "subscene",
-                summary: "The party reads the merchant swap before deciding whether to interfere.",
-                narratives: [
+                title: "Silver for Swords",
+                encounterType: "negotiation",
+                difficulty: "TBD",
+                sourcePath: "/modules/frost-in-the-vault/silverhall/Modules/a2-s4.1-silver-for-swords.html",
+                events: [
                   {
-                    title: "Tradecraft",
-                    body: "<p>Every sword in the crate is wrapped twice except one. That one has the careful indifference of a planted object.</p>",
-                    bodyFormat: "html"
+                    eventNumber: 1,
+                    title: "Counting the Blades",
+                    eventType: "investigation",
+                    summary: "The party reads the merchant swap before deciding whether to interfere.",
+                    narratives: [
+                      {
+                        title: "Tradecraft",
+                        body: "<p>Every sword in the crate is wrapped twice except one. That one has the careful indifference of a planted object.</p>",
+                        bodyFormat: "html"
+                      }
+                    ],
+                    handouts: []
                   }
-                ],
-                handouts: []
+                ]
               }
             ]
           },
@@ -229,7 +245,7 @@ export const modules = [
       { name: "Fosk", ancestry: "Cave badger", sheetPath: "/modules/frost-in-the-vault/silverhall/Characters/character-fosk.htm" }
     ],
     npcs: [
-      { name: "Warehouse Gang", role: "Act I encounter", sheetPath: "/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html" }
+      { name: "Roomstompers Raunch", role: "Act I encounter", sheetPath: "/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html" }
     ],
     bestiary: [
       {
@@ -246,8 +262,7 @@ export const modules = [
             actTitle: "Dust in the Palm",
             sceneNumber: 3,
             sceneTitle: "Vault of Echoes",
-            subsceneNumber: null,
-            subsceneTitle: null,
+
             notes: "Referenced as an environmental threat in vault science material."
           }
         ]
@@ -266,8 +281,7 @@ export const modules = [
             actTitle: "Dust in the Palm",
             sceneNumber: 3,
             sceneTitle: "Vault of Echoes",
-            subsceneNumber: null,
-            subsceneTitle: null,
+
             notes: "Imported from hollowchill.html."
           }
         ]
@@ -286,8 +300,7 @@ export const modules = [
             actTitle: "Dust in the Palm",
             sceneNumber: 3,
             sceneTitle: "Vault of Echoes",
-            subsceneNumber: null,
-            subsceneTitle: null,
+
             notes: "Imported from hollowchill.html."
           }
         ]
@@ -306,8 +319,7 @@ export const modules = [
             actTitle: "Dust in the Palm",
             sceneNumber: 3,
             sceneTitle: "Vault of Echoes",
-            subsceneNumber: null,
-            subsceneTitle: null,
+
             notes: "Imported from hollowchill.html."
           }
         ]
@@ -326,8 +338,7 @@ export const modules = [
             actTitle: "Dust in the Palm",
             sceneNumber: 3,
             sceneTitle: "Vault of Echoes",
-            subsceneNumber: null,
-            subsceneTitle: null,
+
             notes: "Imported from hollowchill.html."
           }
         ]
@@ -346,8 +357,7 @@ export const modules = [
             actTitle: "Dust in the Palm",
             sceneNumber: 3,
             sceneTitle: "Vault of Echoes",
-            subsceneNumber: null,
-            subsceneTitle: null,
+
             notes: "Imported from hollowchill.html."
           }
         ]
@@ -365,29 +375,27 @@ export const modules = [
             actNumber: 1,
             actTitle: "Dust in the Palm",
             sceneNumber: 4,
-            sceneTitle: "Warehouse Gang",
-            subsceneNumber: null,
-            subsceneTitle: null,
+            sceneTitle: "Roomstompers Raunch",
+
             notes: "Imported from hollowchill.html."
           }
         ]
       },
       {
-        name: "Warehouse Gang",
+        name: "Roomstompers Raunch",
         creatureType: "Humanoid",
         levelText: "Level 1 encounter",
-        role: "Street-level opposition",
+        role: "Hired killers",
         statBlockPath: "/modules/frost-in-the-vault/silverhall/Characters/stats-warehouse-gang.html",
-        notes: "Use as the Act I pressure encounter.",
+        notes: "A local mercenary gang hired to silence the party before they learn too much about the crumbling coin.",
         appearances: [
           {
             label: "Act I encounter",
             actNumber: 1,
             actTitle: "Dust in the Palm",
             sceneNumber: 4,
-            sceneTitle: "Warehouse Gang",
-            subsceneNumber: null,
-            subsceneTitle: null,
+            sceneTitle: "Roomstompers Raunch",
+
             notes: "Appears as the warehouse opposition."
           }
         ]
